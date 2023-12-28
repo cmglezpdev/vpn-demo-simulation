@@ -1,44 +1,48 @@
 import socket
 from protocol import Protocol
+from scapy.all import IP, UDP, send
 
-class UDPProtocol(Protocol):
-  def __init__(self, host, port):
-    self.host = host
-    self.port = port
-    self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    self.server_socket.bind((self.host, self.port))
-    print(f"Server listening on {self.host}:{self.port}")
+class UDPProtocol():
+    def __init__(self, ip, port):
+      self.ip = ip
+      self.port = port
+      self.stop = False
+      self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_UDP)
 
-  def send(self, data):
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    client_socket.sendto(data.encode(), (self.host, self.port))
-    client_socket.close()
+      self.socket.bind(self.ip, self.port)
+      self.socket.setblocking(False)
 
-  def receive(self):
-    data, addr = self.server_socket.recvfrom(1024)
-    return data.decode()
-  
-  def close(self):
-    self.server_socker.close()
+    def send(self, data, dest_ip, dest_port):
+      udp_packet = IP(dst=dest_ip)/UDP(dport=dest_port)/data
+      self.socket.send(udp_packet)
 
-  
+    def start(self):
+        while not self.stop:
+            try:
+                data, src_addr = self.socket.recvfrom(1024)
+                packet = IP(data)
+                
+                if UDP in packet:
+                    udp_packet = packet[UDP]
 
-## Example of use
-# host = '1027.0.0.1'
-# port = 12345
+                    if udp_packet.dport != self._port:
+                        continue
 
-# server = UPDProtocol(host, port)
+                    sender_ip = src_addr[0]
+                    print(f'UDP data received from {sender_ip}:{udp_packet.dport}')
 
-# while True:
-#   try:
-#     data = server.receive()
+                    if udp_packet.chksum != 0:
+                        if UDP.verify_chksum(packet):
+                            data = udp_packet.payload.decode('utf-8')
+                            print(f'Data: {data}')
+                            print(f'Length: {len(data)}, Checksum: {udp_packet.chksum}\n')
+                        else:
+                            print('Corrupted data\n')
+                        yield data
 
-#     print(f"Received: {data}")
+            except BlockingIOError:
+                continue
 
-#     response = "Hello client! I recieved your message."
-#     server.send(response)
-#   except KeyboardInterrupt:
-#     print("Closing server...")
-#     server.close()
-#     break
-  
+    def stop(self):
+        self.__stop = True
+        self.__s.close()
