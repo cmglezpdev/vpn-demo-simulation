@@ -2,7 +2,8 @@ import json
 import os
 
 from protocols.udpprotocol import UDPProtocol
-from core import User, VPNData
+from core.users import User
+from core.vpndata import VPNData
 
 
 class VPNServer:
@@ -22,7 +23,7 @@ class VPNServer:
                 continue
 
     def stop(self):
-        self.protocol.stop()
+        self.protocol.close()
         print('VPN server stopped')
 
     def create_user(self, id: int, username: str, password: str, vlan_id: int):

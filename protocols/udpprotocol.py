@@ -3,16 +3,31 @@ import struct
 
 
 class UDPProtocol:
+    """
+    This class represents a UDP Protocol object. It has methods for sending and receiving UDP packets.
+
+    Attributes:
+        ip (str): The IP address for the UDP protocol.
+        port (int): The port number for the UDP protocol.
+    """
     def __init__(self, ip, port):
         self.ip = ip
         self.port = port
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_UDP)
+        self._socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_UDP)
 
-        self.socket.bind((self.ip, self.port))
-        self.socket.setblocking(False)
-        self.stop = True
+        self._socket.bind((self.ip, self.port))
+        self._socket.setblocking(False)
+        self._stop = True
 
     def send(self, data: str, dip: str, dport: int):
+        """
+        Sends a UDP packet.
+
+        Parameters:
+            data (str): The data to be sent.
+            dip (str): The destination IP address.
+            dport (int): The destination port number.
+        """
         data = data.encode('utf-8')
         length = len(data) + 8
 
@@ -20,11 +35,22 @@ class UDPProtocol:
         checksum = self.__calculate_checksum(self.ip, dip, udp_data)
         udp_header = struct.pack('!HHHH', self.port, dport, length, checksum)
 
-        self.socket.sendto(udp_header + data, (dip, dport))
+        self._socket.sendto(udp_header + data, (dip, dport))
         print(f"UDP: {data} sent to {dip}:{dport}")
 
     @staticmethod
     def __calculate_checksum(sip: str, dip: str, data: bytes):
+        """
+        Calculates the checksum for a UDP packet.
+
+        Parameters:
+           sip (str): The source IP address.
+           dip (str): The destination IP address.
+           data (bytes): The data for the UDP packet.
+
+        Returns:
+           int: The calculated checksum.
+        """
         sip = socket.inet_aton(sip)
         dip = socket.inet_aton(dip)
 
@@ -42,11 +68,14 @@ class UDPProtocol:
         return checksum
 
     def start(self):
-        self.stop = False
-        while not self.stop:
+        """
+        Starts the UDP protocol.
+        """
+        self._stop = False
+        while not self._stop:
             try:
                 wrong = False
-                data, addr = self.socket.recvfrom(1024)
+                data, addr = self._socket.recvfrom(1024)
 
                 header = struct.unpack('!HHHH', data[20:28])
                 [sport, dport, length, checksum] = header
@@ -76,5 +105,8 @@ class UDPProtocol:
                 continue
 
     def close(self):
-        self.stop = True
-        self.socket.close()
+        """
+        Closes the UDP protocol.
+        """
+        self._stop = True
+        self._socket.close()
