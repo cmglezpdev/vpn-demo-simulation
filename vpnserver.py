@@ -27,23 +27,32 @@ class VPNServer:
         self.protocol.close()
         print('VPN server stopped')
 
-    def create_user(self, id: int, username: str, password: str, vlan_id: int):
-        if any(user.id == id for user in self.users):
+    def create_user(self, username: str, password: str, vlan_id: int):
+        if any(user.username == username for user in self.users):
             print('User already registered')
             return
 
-        self.users.append(User(id, username, password, vlan_id))
+        self.users.append(User(username, password, vlan_id))
         self.__write_users()
         print(f"User {username} created with VLAN {vlan_id}")
 
-    def remove_user(self, id):
-        if not any(user.id == id for user in self.users):
-            print(f"The user with id {id} not exists")
+    def remove_user(self, username: str):
+        if not any(user.username == username for user in self.users):
+            print(f"The user with username {username} not exists")
             return
 
-        self.users = list(filter(lambda x: x.id == id, self.users))
+        self.users = list(filter(lambda x: x.username == username, self.users))
         self.__write_users()
-        print(f"User with id {id} removed")
+        print(f"User {username} removed")
+
+    def list_users(self, vlan_id: int = None):
+        filtered_users = list(filter(
+            lambda x: vlan_id is None or x.vlan_id == vlan_id,
+            self.users
+        ))
+        print("Users: ")
+        for user in filtered_users:
+            print(f"Username: {user.username}, VLAN: {user.vlan_id}")
 
     def __request(self, vpn_data: VPNData):
         user = next(
