@@ -78,12 +78,12 @@ class UDPProtocol:
                 data, addr = self._socket.recvfrom(1024)
 
                 header = struct.unpack('!HHHH', data[20:28])
-                [sport, dport, length, checksum] = header
+                [sport, dport, length, checksum, _] = header
 
                 if dport != self.port:
                     continue
 
-                sender_ip = addr[0]
+                sender_ip, _ = addr
                 zero_checksum_header = (data[20:28])[:6] + b'\x00\x00' + (data[20:28])[8:]
                 calculated_checksum = self.__calculate_checksum(sender_ip, self.ip, zero_checksum_header + data[28:])
 
