@@ -75,12 +75,11 @@ class UDPProtocol:
         while not self._stop:
             try:
                 wrong = False
-                print("=====================================")
                 data, addr = self._socket.recvfrom(1024)
                 print(data)
 
                 header = struct.unpack('!HHHH', data[20:28])
-                [sport, dport, length, checksum, _] = header
+                [sport, dport, length, checksum] = header
 
                 if dport != self.port:
                     continue

@@ -1,6 +1,7 @@
 import json
 import os
 
+from pathlib import Path
 from protocols.udpprotocol import UDPProtocol
 from core.users import User
 from core.vpndata import VPNData
@@ -83,5 +84,7 @@ class VPNServer:
             return []
 
     def __write_users(self):
-        with open(constants.USERS_DATA_PATH, 'w') as file:
+        Path(constants.USERS_DATA_PATH).parent.mkdir(parents=True, exist_ok=True)
+
+        with open(constants.USERS_DATA_PATH, 'w+') as file:
             json.dump(self.users, file, default=lambda x: x.__dict__)
