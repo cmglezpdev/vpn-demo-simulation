@@ -1,6 +1,5 @@
 import json
 import os
-
 from pathlib import Path
 from protocols.udpprotocol import UDPProtocol
 from core.users import User
@@ -19,7 +18,7 @@ class VPNServer:
         for data in self.protocol.start():
             try:
                 vpn_data = VPNData.to_instance(json.loads(data))
-                self.__request(vpn_data)
+                self.__redirect(vpn_data)
             except Exception as e:
                 print(f"Error: {e}")
                 continue
@@ -55,7 +54,7 @@ class VPNServer:
         for user in filtered_users:
             print(f"Username: {user.username}, VLAN: {user.vlan_id}")
 
-    def __request(self, vpn_data: VPNData):
+    def __redirect(self, vpn_data: VPNData):
         user = next(
             filter(lambda x: x.username == vpn_data.username and x.password == vpn_data.password, self.users), None
         )
