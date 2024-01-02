@@ -1,13 +1,7 @@
 import sqlite3
 from abc import ABC
 from typing import Union
-from enum import Enum
 from core import constants
-
-
-class RestrictionType(Enum):
-    USER = 'USER'
-    VLAN = 'VLAN'
 
 
 class User:
@@ -54,7 +48,6 @@ class UsersDbOperations(ABC):
     def __init__(self):
         self.db_connection = sqlite3.connect(constants.DATABASE_PATH)
         self.db_cursor = self.db_connection.cursor()
-        self.restriction_type = RestrictionType
 
     def get_user(self, username: str) -> Union[User, None]:
         self.db_cursor.execute(
@@ -127,19 +120,6 @@ class UsersDbOperations(ABC):
             (?, ?, ?, ?)
             """,
             (self.restriction_type.USER, blocked_ip, blocked_port, exists['id'])
-        )
-
-        self.db_connection.commit()
-        return True
-
-    def restrict_vlan(self, vlan: str, blocked_ip: str, blocked_port: int) -> bool:
-        self.db_cursor.execute(
-            """
-            insert into restrictions(type, blocked_ip, blocked_port, blocked_vlan_id)
-            values
-            (?, ?, ?, ?)
-            """,
-            (self.restriction_type.USER, blocked_ip, blocked_port, vlan)
         )
 
         self.db_connection.commit()
