@@ -67,6 +67,17 @@ class Main:
                 vlan_id = int(args[0]) if len(args) == 1 else None
                 self.vpn.list_users(vlan_id)
 
+            elif cmd == "restrict_user" and len(args) == 3 and args[2].isdigit():
+                self.vpn.restrict_user(username=args[0], blocked_ip=args[1], blocked_port=int(args[2]))
+
+            elif cmd == "restrict_vlan" and len(args) == 3 and args[0].isdigit() and args[2].isdigit():
+                self.vpn.restrict_vlan(vlan=int(args[0]), blocked_ip=args[1], blocked_port=int(args[2]))
+
+            elif cmd == "list_restrictions" and len(args) <= 1:
+                self.vpn.list_restrictions(
+                    type=args[0] if len(args) == 1 else None
+                )
+
             elif cmd == "help" and len(args) == 0:
                 self.__help_menu()
 
