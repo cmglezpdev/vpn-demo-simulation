@@ -60,7 +60,7 @@ class Main:
             elif cmd == "create_user" and len(args) == 3 and args[2].isdigit():
                 self.vpn.create_user(args[0], args[1], int(args[2]))
 
-            elif cmd == "remove_user" and len(args) == 1 and args[0].isdigit():
+            elif cmd == "remove_user" and len(args) == 1:
                 self.vpn.remove_user(args[0])
 
             elif cmd == "list_users" and (len(args) == 0 or len(args) == 1 and args[0].isdigit()):
