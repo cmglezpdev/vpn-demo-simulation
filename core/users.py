@@ -106,7 +106,7 @@ class UsersDbOperations(ABC):
         if user is None:
             return False
 
-        return user['password'] == password
+        return user.password == password
 
     def restrict_user(self, username: str, blocked_ip: str, blocked_port: int) -> bool:
         exists = self.get_user(username)
