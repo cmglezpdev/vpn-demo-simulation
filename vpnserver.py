@@ -99,11 +99,11 @@ class VPNServer:
 
         logged = db_users.login(vpn_data.username, vpn_data.password)
 
-        if logged:
+        if not logged:
             print('User not found or password incorrect')
             return
 
-        pass_restrictions = any(map(
+        pass_restrictions = all(map(
             lambda x: x.check_pass(vpn_data),
             db_rules.list_restrictions()
         ))
