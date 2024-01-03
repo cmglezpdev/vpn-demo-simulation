@@ -60,12 +60,23 @@ class Main:
             elif cmd == "create_user" and len(args) == 3 and args[2].isdigit():
                 self.vpn.create_user(args[0], args[1], int(args[2]))
 
-            elif cmd == "remove_user" and len(args) == 1 and args[0].isdigit():
+            elif cmd == "remove_user" and len(args) == 1:
                 self.vpn.remove_user(args[0])
 
             elif cmd == "list_users" and (len(args) == 0 or len(args) == 1 and args[0].isdigit()):
                 vlan_id = int(args[0]) if len(args) == 1 else None
                 self.vpn.list_users(vlan_id)
+
+            elif cmd == "restrict_user" and len(args) == 3 and args[2].isdigit():
+                self.vpn.restrict_user(username=args[0], blocked_ip=args[1], blocked_port=int(args[2]))
+
+            elif cmd == "restrict_vlan" and len(args) == 3 and args[0].isdigit() and args[2].isdigit():
+                self.vpn.restrict_vlan(vlan=int(args[0]), blocked_ip=args[1], blocked_port=int(args[2]))
+
+            elif cmd == "list_restrictions" and len(args) <= 1:
+                self.vpn.list_restrictions(
+                    type=args[0] if len(args) == 1 else None
+                )
 
             elif cmd == "help" and len(args) == 0:
                 self.__help_menu()

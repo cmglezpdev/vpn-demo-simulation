@@ -76,7 +76,6 @@ class UDPProtocol:
             try:
                 wrong = False
                 data, addr = self._socket.recvfrom(1024)
-                print(data)
 
                 header = struct.unpack('!HHHH', data[20:28])
                 [sport, dport, length, checksum] = header

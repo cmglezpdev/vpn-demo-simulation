@@ -1,7 +1,6 @@
 from protocols import UDPProtocol
 from core import VPNData
 import json
-import sys
 
 username = input('Username: ')
 password = input('Password: ')
@@ -17,13 +16,4 @@ vpn_data = json.dumps(
     default=lambda x: x.__dict__
 )
 
-args = sys.argv[1:]
-if len(args) == 0:
-    print("Invalid protocols")
-    exit(1)
-
-if args[0] == 'udp':
-    protocol.send(vpn_data, '127.0.0.1', 3001)
-else:
-    print("Invalid protocol")
-    exit(1)
+protocol.send(vpn_data, '127.0.0.1', 3001)
