@@ -2,18 +2,12 @@ from protocols import UDPProtocol
 from core import VPNData
 import json
 
-# username = input('Username: ')
-# password = input('Password: ')
-#
-# destination_ip = input('Destination IP: ')
-# destination_port = int(input('Destination Port: '))
-# data = input('Data: ')
+username = input('Username: ')
+password = input('Password: ')
 
-username = 'unlock_user'
-password = '123'
-destination_ip = '127.0.0.1'
-destination_port = 3002
-data = 'Esta es la data'
+destination_ip = input('Destination IP: ')
+destination_port = int(input('Destination Port: '))
+data = input('Data: ')
 
 protocol = UDPProtocol('127.0.0.1', 3000)
 
@@ -22,4 +16,4 @@ vpn_data = json.dumps(
     default=lambda x: x.__dict__
 )
 
-protocol.send(vpn_data, '127.0.0.1', 3002)
+protocol.send(vpn_data, '127.0.0.1', 3001)
