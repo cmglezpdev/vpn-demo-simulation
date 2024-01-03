@@ -103,6 +103,8 @@ class VPNServer:
             print('User not found or password incorrect')
             return
 
+        # TODO: Check only restrictions associated with the user (same vlan_id or associated directly to him)
+        # TODO: Create a method to do this. You pass it the user and return all restrictions (VLAN and USER) that are associated with the user
         pass_restrictions = all(map(
             lambda x: x.check_pass(vpn_data),
             db_rules.list_restrictions()
