@@ -15,7 +15,12 @@ list_migrations = os.listdir('./migrations')
 for migration in list_migrations:
     mig_path = f"./migrations/{migration}"
     with open(mig_path, 'r') as mig:
-        sql = mig.read()
-        cursor.execute(sql)
+        sql_statements = mig.read().split(';')
+
+        for sql_statement in sql_statements:
+            if sql_statement.strip(): 
+                cursor.execute(sql_statement)
+connection.commit()
+connection.close()
 
 print('Migrations executed successfully')
