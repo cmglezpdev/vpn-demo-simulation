@@ -1,1 +1,49 @@
-jfkdjddk
+Informe De Redes de Computadoras
+Proyecto VPN
+	
+Integrantes
+Alex Sánchez Saez
+Carlos Manuel Gonzáles
+Jorge Alberto Aspiolea
+
+
+Introducción
+En este proyecto, para culminar los conocimientos de la asignatura redes de computadoras , llevamos a cabo la implementación de un sistema cliente-servidor udp y una vpn que cuenta con , registro e inicio de sesión de usuarios usando sqllite , redireccionamiento de la conexión y enrutamiento de los usuarios , así como el bloqueo de subredes y la denegación de servicios para los usuarios 
+
+
+
+Desarrollo
+Sistema de Archivos:
+El proyecto se compone de 5 archivos:
+Client.py contiene la implementación de un cliente básico tcp 
+Server.py contiene la implementación del servidor básico tcp 
+Vpnserver.py contiene la lógica asociada al vpn y la conexión entre el usuario y servidor tcp
+Preload.py inicia la conexión a la base de datos donde se almacena la información de los usuarios
+Rules/rules.py contiene las reglas para restringir o permitir el acceso a los usuarios 
+Protocols/udpprotocol.py contiene la implementación del protocolo udp
+Core/ contiene las migraciones de los datos para la base de datos
+
+Protocolo UDP:
+Se creó una clase denominada UDPProtocol, la cual sirve como representación de un objeto de protocolo UDP en Python, utilizando sockets para facilitar la comunicación de datos en una red. En el método constructor (__init__), se inicializa la clase con la dirección IP y el número de puerto especificados, y se crea un socket bruto que permite el acceso directo a los paquetes de red. Este socket se enlaza a la dirección IP y al puerto indicados, y se configura en modo no bloqueante para permitir una ejecución más eficiente del protocolo. Además, se establece una variable _stop para controlar el bucle de recepción y se configura en True para iniciar detenido. La función send tiene como objetivo enviar paquetes UDP. Para ello, toma como parámetros los datos a enviar, la dirección IP de destino (dip) y el puerto de destino (dport). Los datos se codifican en formato UTF-8, y se calcula la longitud del paquete. Luego, se empaqueta el encabezado UDP junto con los datos y se calcula el checksum utilizando el método privado __calculate_checksum. Finalmente, el paquete se envía mediante el socket, y se imprime un mensaje indicando la acción realizada. Finalmente, el método close se utiliza para cerrar el protocolo UDP. Establece la variable _stop en True para salir del bucle de recepción y cierra el socket
+
+Cliente TCP:
+
+Contiene la interacción básica para enviar datos de usuario y contenido a través de un protocolo UDP simulado en una red local. Primero, el usuario ingresa un nombre de usuario y contraseña, así como la dirección IP y el puerto de destino para la transmisión de datos. Posteriormente, se introduce la información que se desea enviar. Utilizando una instancia de la clase UDPProtocol del módulo protocols, se establece una conexión UDP con la dirección IP '127.0.0.1' y el puerto 3000. Luego, se crea un objeto VPNData del módulo core, que encapsula la información del usuario, destino y datos, y se convierte en formato JSON para facilitar su transmisión. Finalmente, el método send del protocolo UDP se utiliza para enviar los datos codificados a la dirección IP '127.0.0.1' y al puerto 3001. En resumen, este código simula el envío seguro de información de usuario y datos a través de un protocolo UDP en una red local, utilizando clases personalizadas y formato JSON para estructurar y transmitir la información de manera eficiente.
+
+Servidor VPN:
+Se define una clase VPNServer que simula un servidor VPN básico utilizando un protocolo UDP personalizado. El servidor gestiona operaciones como la creación y eliminación de usuarios, restricciones de acceso basadas en direcciones IP y puertos, y la redirección de datos. Utiliza clases como UDPProtocol para la comunicación, y realiza operaciones de manipulación de usuarios y reglas de restricción a través de las clases UsersDbOperations y RestrictionsDbOperations. El método start inicia el servidor, escuchando la llegada de datos del protocolo UDP y redirigiéndolos según las reglas establecidas. Además, la clase proporciona funciones para listar usuarios, aplicar restricciones a usuarios y VLANs, y listar las restricciones actuales. La redirección de datos se ejecuta si un usuario autenticado supera las restricciones definidas.
+
+Características del proyecto:
+El proyecto consiste en un programa con interfaz de usuario a través de la terminal (TUI) con un menú con las siguientes opciones:
+Mostrar el menú 
+Salir del programa
+Comandos de la vpn
+Iniciar el protocolo
+Crear un usuario en la vlan 
+Listar los usuarios de la vlan
+Detener la ejecución de la vpn 
+       4- comandos del firewall
+Restringir una subred de la virtual (vlan)
+ Restringir a un usuario
+
+El proyecto se inicia en una dirección ip hardcodeada en el archivo main.py específicamente en la creación del objeto main, para gestionar los usuarios utilizamos sqlite como base de datos. Desde la interfaz puede iniciar o terminar el servicio, registrar e iniciar la sesión de algún usuario , ver los usuarios , así como bloquear o conceder acceso a la red a dichos usuarios se puede bloquear direcciones de red a algún usuario específico.
